@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+    "textures": {
+        "all": "lingshi_deco:block/patterned_brick_1"
+    }
+}
