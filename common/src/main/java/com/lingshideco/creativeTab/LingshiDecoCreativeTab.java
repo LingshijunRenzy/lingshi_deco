@@ -24,7 +24,7 @@ public class LingshiDecoCreativeTab {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(MOD_ID, Registries.CREATIVE_MODE_TAB);
 
     //main tab
-    public static final RegistrySupplier<CreativeModeTab> MOD_MAIN_TAB = create("main", () -> LingshiDecoRegistries.ITEM_SUPPLIERS.get(new ResourceLocation(MOD_ID, "main_tab_icon")).get());
+public static final RegistrySupplier<CreativeModeTab> MOD_MAIN_TAB = create("main", () -> Items.APPLE);
 
     public static RegistrySupplier<CreativeModeTab> create(String name, Supplier<Item> item){
         if(ModTabs.containsKey(name)){

@@ -1,6 +1,8 @@
 package com.lingshideco.register;
 
 import com.google.common.base.Suppliers;
+import com.lingshideco.block.BlockFactory;
+import com.lingshideco.creativeTab.LingshiDecoCreativeTab;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -27,38 +29,21 @@ public class LingshiDecoRegistries {
     public static final Map<String, RegistrySupplier<Item>> ITEM_SUPPLIERS = new HashMap<>();
 
     public static void register() {
+        LingshiDecoCreativeTab.CREATIVE_MODE_TABS.register();
+
         registerBlocks();
-        registerBlockItems();
     }
 
     private static void registerBlocks() {
         // 注册所有方块，但不立即获取实例
-        for (Map.Entry<String, Supplier<Block>> entry : ModBlocks.entrySet()) {
-            String key = entry.getKey();
-            Supplier<Block> blockSupplier = entry.getValue();
+        for(LingshiRegistryData.Block block : ModBlocks.values()){
+            // 注册方块，使用注册供应商
+            RegistrySupplier<Block> blockSupplier = BLOCKS.register(new ResourceLocation(MOD_ID, block.name), () -> BlockFactory.createBlock(block));
+            BLOCK_SUPPLIERS.put(block.name, blockSupplier);
 
-            // 保存注册供应商，不要调用.get()
-            RegistrySupplier<Block> registrySupplier = BLOCKS.register(
-                    new ResourceLocation(MOD_ID, key),
-                    blockSupplier);
-
-            BLOCK_SUPPLIERS.put(key, registrySupplier);
-            System.out.println("注册方块: " + key);
-        }
-    }
-
-    private static void registerBlockItems() {
-        // 注册方块物品，使用注册供应商
-        for (String key : BLOCK_SUPPLIERS.keySet()) {
-            RegistrySupplier<Block> blockSupplier = BLOCK_SUPPLIERS.get(key);
-
-            RegistrySupplier<Item> itemSupplier = ITEMS.register(
-                    new ResourceLocation(MOD_ID, key),
-                    () -> new BlockItem(blockSupplier.get(), new Item.Properties()));
-
-            ITEM_SUPPLIERS.put(key, itemSupplier);
-
-            System.out.println("注册方块物品: " + key);
+            // 注册方块物品，使用注册供应商
+            RegistrySupplier<Item> itemSupplier = ITEMS.register(new ResourceLocation(MOD_ID, block.name), () -> new BlockItem(blockSupplier.get(), new Item.Properties().arch$tab(LingshiDecoCreativeTab.getTab(block.itemGroup))));
+            ITEM_SUPPLIERS.put(block.name, itemSupplier);
         }
     }
 }
