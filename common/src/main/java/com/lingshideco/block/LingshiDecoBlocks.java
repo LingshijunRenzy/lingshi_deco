@@ -28,5 +28,10 @@ public class LingshiDecoBlocks {
                 .blockType("base")
                 .itemGroup("patterned_brick_3")
                 .vanillaParent("minecraft:bricks"));
+        ModBlocks.put("patterned_brick_4", new LingshiRegistryData.Block()
+                .name("patterned_brick_4")
+                .blockType("base")
+                .itemGroup("patterned_brick_4")
+                .vanillaParent("minecraft:bricks"));
     }
 }

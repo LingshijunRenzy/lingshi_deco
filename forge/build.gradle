@@ -29,11 +29,6 @@ configurations {
         canBeConsumed = false
     }
 
-    dataGen {
-        canBeResolved = true
-        canBeConsumed = false
-        extendsFrom implementation
-    }
 }
 
 dependencies {
@@ -44,12 +39,6 @@ dependencies {
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
-
-    // 直接声明数据生成专用依赖
-    dataGen "net.minecraftforge:forge:${forge_version}:installer@jar"
-
-    // Architectury Transformer 需要的基础依赖
-    architecturyTransformerClasspath "net.minecraftforge:forge:${forge_version}"
 }
 
 processResources {
@@ -67,41 +56,4 @@ shadowJar {
 
 remapJar {
     inputFile.set shadowJar.archiveFile
-}
-
-task runData(type: JavaExec) {
-    group = "forge"
-    dependsOn ':forge:extractData'
-    classpath = configurations.dataGen + sourceSets.main.runtimeClasspath
-    mainClass = "net.minecraft.data.Main"
-    workingDir = file('run')
-    systemProperties = [
-            'forge.disableNetwork': 'true',
-            'forge.enableGameTest': 'true',
-            'forge.skipClientSetup': 'true'
-    ]
-    args = [
-            '--all',
-            '--client',
-            '--server',
-            '--dev',
-            '--mod', 'lingshi_deco',
-            '--output', project(':common').file('src/main/resources'),
-            '--existing', file('src/generated/resources'),
-            '--gameDir', workingDir,
-            '--flat'
-    ]
-    doFirst {
-        file('run').mkdirs()
-        file('src/generated/resources').mkdirs()
-    }
-}
-
-// 新增数据解压任务
-task extractData(type: Copy) {
-    from(zipTree(configurations.dataGen.singleFile)) {
-        include 'data/**'
-        include 'assets/**'
-    }
-    into file('src/generated/resources')
 }
